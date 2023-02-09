@@ -5,12 +5,18 @@
     <main>
       <div class="todos">
         <div class="write">
-          <input type="text" v-model = "addItemText"/>
+          
+          <input ref="writeArea" type="text" v-model = "addItemText" @keyup.enter="addItem"/>
           <button class="btn add" @click="addItem">Add</button>
         </div>
         <ul class="list">
-            <li v-for="todo in todos" :key="todo.text"> 
-                <i :class="[todo.state === 'yet' ? 'far': 'fas', 'fa-check-square']"></i>
+            <li v-for="(todo,i) in todos" :key="todo.text"> 
+                <i
+                  @click="checkItem(i)"
+
+                  :class="[todo.state === 'yet' ? 'far': 'fas', 'fa-check-square']"></i>
+
+                  <!-- :class="[todo.state === 'yet' ? 'far': 'fas', 'fa-check-square']"></i> -->
 
              
             <span>
@@ -43,21 +49,33 @@ export default {
     },
     methods: {
       addItem(){
-        if(this.addItemText != ''){
-          let value = this.addItemText;
+        if(this.addItemText === '') return;
+        let value = this.addItemText;
          
-          this.todos.push({
+        this.todos.push({
             text: value, state: 'yet'
           })
+        this.addItemText='';
     
-        } 
+        },
+      checkItem(index){
+        if(this.todos[index].state === 'yet')
+          this.todos[index].state = 'done'
+        else if(this.todos[index].state === 'done')
+          this.todos[index].state = 'yet'
+
+
+      } 
         
         
 
+      },
+
+      mounted() {
+        this.$refs.writeArea.focus();
       }
     }
 
-}
 </script>
 
 <style>
